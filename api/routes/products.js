@@ -13,4 +13,18 @@ router.post('/', (req, res, next) => {
     })
 })
 
+router.get('/:productId', (req, res, next) => {
+    const id = req.params.productId
+    if ( id === 'special') {
+        res.status(200).json({
+            message: "Your Special id",
+            id: id
+        })
+    } else {
+        res.status(200).json({
+            message: " Your ID"
+        })
+    }
+})
+
 module.exports = router
