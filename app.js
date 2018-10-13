@@ -7,6 +7,18 @@ app.use(morgan('dev'))
 app.use(bodyParser.urlencoded({ extended : false}))
 app.use(bodyParser.json())
 
+//CORS
+app.use((req, res, next) =>{
+    //Allow All Origin
+    res.header('Access-Control-Allow-Origin', '*')
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization')
+    if (req.method === 'OPTIONS') {
+        res.header('Access-Control-Allow-Methods','PUT, POST, PATCH, DELETE, GET')
+        return res.status(200).json({})
+    }
+    next()
+})
+
 const productRouter = require('./api/routes/products')
 const orderRouter = require('./api/routes/orders')
 
