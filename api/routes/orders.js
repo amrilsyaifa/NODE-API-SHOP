@@ -14,17 +14,16 @@ router.get('/:orderId', (req, res, next) => {
     })
 })
 
-router.post('/:orderID', (req, res, next) => {
-    res.status(200).json({
-        message: "Post /orders/:orderID",
-        rderID : req.params.orderId
+router.post('/', (req, res, next) => {
+    res.status(201).json({
+        message: "Post /orders/",
     })
 })
 
-router.delete('/', (req, res, next) => {
+router.delete('/:orderId', (req, res, next) => {
     res.status(200).json({
-        message: "Get /orders/:orderId",
-        rderID : req.params.orderId
+        message: "Delete /orders/:orderId",
+        orderID : req.params.orderId
     })
 })
 
