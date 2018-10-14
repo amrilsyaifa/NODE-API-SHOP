@@ -64,10 +64,12 @@ router.get('/:productId', (req, res, next) => {
     .then(product => {
         if (product) {
             res.status(200).json({
-                product: product,
-                request: {
-                    type: 'GET',
-                    url: 'http://localhost:3000/products'
+                product: {
+                    product : product,
+                    request: {
+                        type: 'GET',
+                        url: 'http://localhost:3000/products'
+                    }
                 }
             })
         } else {
@@ -88,10 +90,12 @@ router.patch('/:productId', (req, res, next) => {
     .then((product) => {
         if (product) {
             res.status(200).json({
-                update: req.body,
-                request: {
-                    type: 'GET',
-                    url: 'http://localhost:3000/products/' + id
+                update: {
+                    update: req.body,
+                    request: {
+                        type: 'GET',
+                        url: 'http://localhost:3000/products/' + id
+                    }
                 }
             })
         } else {
