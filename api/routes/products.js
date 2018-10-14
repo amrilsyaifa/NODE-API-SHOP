@@ -3,19 +3,32 @@ const router = express.Router()
 const Product = require('../models/products')
 
 router.get('/', (req, res, next) => {
-    Product.find().exec().then(docs => {
-        console.log(docs)
+    Product.find()
+    .select('name price _id')
+    .exec()
+    .then(docs => {
         if (docs.length > 0) {
-            res.status(200).json({
-                products: docs
-            })
+            const response = {
+                count : docs.length,
+                product : docs.map(doc => {
+                    return {
+                        name: doc.name,
+                        price: doc.price,
+                        _id: doc._id,
+                        request: {
+                            type : 'GET',
+                            url: 'http://localhost:3000/products/' + doc._id
+                        }
+                    }
+                })
+            }
+            res.status(200).json(response)
         } else {
             res.status(404).json({
                 products: 'No Product Entry'
             })
         }
     }).catch(err => {
-        console.log(err)
         res.status(500).json({
             error: err
         })
@@ -25,12 +38,18 @@ router.get('/', (req, res, next) => {
 router.post('/', (req, res, next) => {
     const newProduct = new Product(req.body)
     newProduct.save().then((result) => {
-        console.log(result)
         res.status(201).json({
-            create: newProduct
+            created: {
+                name: result.name,
+                price: result.price,
+                _id: result._id,
+                request: {
+                    type: 'GET',
+                    url: 'http://localhost:3000/products/' + result._id
+                }
+            }
         })
     }).catch(err => {
-        console.log(err)
         res.status(500).json({
             error: err
         })
@@ -39,10 +58,17 @@ router.post('/', (req, res, next) => {
 
 router.get('/:productId', (req, res, next) => {
     const id = req.params.productId
-    Product.findById(id).then(product => {
+    Product.findById(id)
+    .select('name price _id')
+    .exec()
+    .then(product => {
         if (product) {
             res.status(200).json({
-                product: product
+                product: product,
+                request: {
+                    type: 'GET',
+                    url: 'http://localhost:3000/products'
+                }
             })
         } else {
             res.status(404).json({
@@ -50,7 +76,6 @@ router.get('/:productId', (req, res, next) => {
             })
         }
     }).catch(err => {
-        console.log(err)
         res.status(500).json({
             error: err
         })
@@ -63,7 +88,11 @@ router.patch('/:productId', (req, res, next) => {
     .then((product) => {
         if (product) {
             res.status(200).json({
-                update: req.body
+                update: req.body,
+                request: {
+                    type: 'GET',
+                    url: 'http://localhost:3000/products/' + id
+                }
             })
         } else {
             res.status(404).json({
@@ -71,7 +100,6 @@ router.patch('/:productId', (req, res, next) => {
             })
         }
     }).catch(err => {
-        console.log(err)
         res.status(500).json({
             error: err
         })
@@ -83,7 +111,11 @@ router.delete('/:productId', (req, res, next) => {
     .then((product) => {
         if (product) {
             res.status(200).json({
-                delete: req.params.productId
+                delete: req.params.productId,
+                request: {
+                    type: 'POST',
+                    url: 'http://localhost:3000/products/',
+                }
             })
         } else {
             res.status(404).json({
@@ -91,7 +123,6 @@ router.delete('/:productId', (req, res, next) => {
             })
         }
     }).catch(err => {
-        console.log(err)
         res.status(500).json({
             error: err
         })
