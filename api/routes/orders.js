@@ -6,6 +6,8 @@ const Product = require ('../models/products')
 router.get('/', (req, res, next) => {
     Order.find()
     .select('productid quantity _id')
+    //populate reference model orderSchema 'REF' mongoose Schema
+    .populate('productid','name')
     .then(docs => {
         res.status(200).json({
             count: docs.length,
@@ -32,7 +34,7 @@ router.get('/', (req, res, next) => {
 router.get('/:orderId', (req, res, next) => {
     const id = req.params.orderId
     Order.findById(id)
-    .select('productid quantity _id')
+    .populate('productid')
     .exec()
     .then(order => {
         if (order) {
