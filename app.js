@@ -4,24 +4,24 @@ const morgan = require('morgan')
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
 
-mongoose.connect('mongodb://localhost:27017/shop', { useNewUrlParser: true }).then(() => {
+mongoose.connect('mongodb://localhost:27017/shop', { useNewUrlParser: true, useCreateIndex: true }).then(() => {
     console.log('Conected Mongodb')
-}).catch(err =>{
+}).catch(err => {
     console.log(err)
 })
 
 app.use(morgan('dev'))
-app.use('/uploads',express.static('uploads'))
-app.use(bodyParser.urlencoded({ extended : false}))
+app.use('/uploads', express.static('uploads'))
+app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
 //CORS
-app.use((req, res, next) =>{
+app.use((req, res, next) => {
     //Allow All Origin
     res.header('Access-Control-Allow-Origin', '*')
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization')
     if (req.method === 'OPTIONS') {
-        res.header('Access-Control-Allow-Methods','PUT, POST, PATCH, DELETE, GET')
+        res.header('Access-Control-Allow-Methods', 'PUT, POST, PATCH, DELETE, GET')
         return res.status(200).json({})
     }
     next()
@@ -44,7 +44,7 @@ app.use((req, res, next) => {
 app.use((error, req, res, next) => {
     res.status(error.status || 500)
     res.json({
-        error : {
+        error: {
             message: error.message
         }
     })
